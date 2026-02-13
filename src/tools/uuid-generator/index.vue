@@ -10,8 +10,8 @@
         </el-form-item>
         <el-form-item label="大小写">
           <el-radio-group v-model="uppercase">
-            <el-radio-button :label="false">小写</el-radio-button>
-            <el-radio-button :label="true">大写</el-radio-button>
+            <el-radio-button :value="false">小写</el-radio-button>
+            <el-radio-button :value="true">大写</el-radio-button>
           </el-radio-group>
         </el-form-item>
         <el-form-item>

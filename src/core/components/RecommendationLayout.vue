@@ -17,8 +17,8 @@
       <div class="filter-group">
         <span class="filter-label">分类:</span>
         <el-radio-group v-model="selectedCategory" size="small">
-          <el-radio-button label="all">全部</el-radio-button>
-          <el-radio-button v-for="cat in allCategories" :key="cat" :label="cat">{{ cat }}</el-radio-button>
+          <el-radio-button value="all">全部</el-radio-button>
+          <el-radio-button v-for="cat in allCategories" :key="cat" :value="cat">{{ cat }}</el-radio-button>
         </el-radio-group>
       </div>
 

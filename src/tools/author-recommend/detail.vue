@@ -33,9 +33,12 @@
           </div>
         </div>
       </div>
-      
+      <el-divider content-position="left">简介</el-divider>
+      <div class="long-desc rich-text">{{ selectedAuthor.desc }}</div>
       <el-divider content-position="left">生平简介</el-divider>
-      <p class="long-desc">{{ selectedAuthor.details }}</p>
+      <div class="long-desc rich-text">
+        <MdPreview :modelValue="selectedAuthor.details" />
+      </div>
 
       <el-divider content-position="left">主要作品</el-divider>
       <ul class="works-list">
@@ -52,16 +55,28 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { Picture } from '@element-plus/icons-vue'
-import { authors } from './data'
+import { type Author } from './data'
+import { getAuthorByName } from '@/core/api'
 
 const route = useRoute()
 const authorName = route.params.itemId as string
+const selectedAuthor = ref<Author | null>(null)
 
-const selectedAuthor = computed(() => {
-  return authors.find(a => a.name === authorName)
+onMounted(async () => {
+  try {
+    const response = await getAuthorByName(authorName)
+    const item = response.data
+    selectedAuthor.value = {
+      ...item,
+      avatarUrl: item.avatar_url,
+      lifeSpan: item.life_span
+    }
+  } catch (error) {
+    console.error('Failed to fetch author detail:', error)
+  }
 })
 </script>
 
@@ -95,7 +110,19 @@ const selectedAuthor = computed(() => {
 .long-desc {
   line-height: 1.6;
   color: #333;
+}
+.rich-text :deep(p) {
+  margin-bottom: 1em;
   text-indent: 2em;
+}
+.rich-text :deep(h1), .rich-text :deep(h2), .rich-text :deep(h3) {
+  margin-top: 1em;
+  margin-bottom: 0.5em;
+  font-weight: bold;
+}
+.rich-text :deep(ul), .rich-text :deep(ol) {
+  padding-left: 2em;
+  margin-bottom: 1em;
 }
 .works-list {
   padding-left: 20px;

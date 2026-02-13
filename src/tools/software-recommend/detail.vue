@@ -15,9 +15,13 @@
       <el-divider />
       <h3>简介</h3>
       <p class="long-desc">{{ selectedApp.desc }}</p>
-      <p class="long-desc">
-        这里可以展示更详细的软件功能特性、版本更新日志、使用教程等。由于目前是演示数据，暂时复用简介字段。
-      </p>
+      
+      <div v-if="selectedApp.details">
+        <el-divider />
+        <h3>详细介绍</h3>
+        <MdPreview :modelValue="selectedApp.details" />
+      </div>
+
       <div class="detail-footer">
          <el-button type="primary" size="large" @click="openLink(selectedApp.link)">
            前往官网下载 <el-icon class="el-icon--right"><TopRight /></el-icon>
@@ -29,16 +33,23 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { TopRight } from '@element-plus/icons-vue'
-import { allApps } from './data'
+import { type App } from './data'
+import { getSoftwareByName } from '@/core/api'
 
 const route = useRoute()
 const appName = route.params.itemId as string
+const selectedApp = ref<App | null>(null)
 
-const selectedApp = computed(() => {
-  return allApps.find(a => a.name === appName)
+onMounted(async () => {
+  try {
+    const response = await getSoftwareByName(appName)
+    selectedApp.value = response.data
+  } catch (error) {
+    console.error('Failed to fetch software detail:', error)
+  }
 })
 
 const openLink = (url: string) => {
@@ -63,8 +74,20 @@ const openLink = (url: string) => {
 }
 .long-desc {
   line-height: 1.6;
-  text-indent: 2em;
   color: #333;
+}
+.rich-text :deep(p) {
+  margin-bottom: 1em;
+  text-indent: 2em;
+}
+.rich-text :deep(h1), .rich-text :deep(h2), .rich-text :deep(h3) {
+  margin-top: 1em;
+  margin-bottom: 0.5em;
+  font-weight: bold;
+}
+.rich-text :deep(ul), .rich-text :deep(ol) {
+  padding-left: 2em;
+  margin-bottom: 1em;
 }
 .detail-footer {
   margin-top: 30px;

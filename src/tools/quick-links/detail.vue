@@ -32,16 +32,27 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { ArrowLeft, TopRight } from '@element-plus/icons-vue'
-import { allLinks } from './data'
+import { type LinkItem } from './data'
+import { getQuickLinkByName } from '@/core/api'
 
 const route = useRoute()
 const linkName = route.params.itemId as string
+const selectedLink = ref<LinkItem | null>(null)
 
-const selectedLink = computed(() => {
-  return allLinks.find(l => l.name === linkName)
+onMounted(async () => {
+  try {
+    const response = await getQuickLinkByName(linkName)
+    const item = response.data
+    selectedLink.value = {
+      ...item,
+      detailedDesc: item.detailed_desc
+    }
+  } catch (error) {
+    console.error('Failed to fetch link detail:', error)
+  }
 })
 
 const openLink = (url: string) => {

@@ -51,11 +51,28 @@
 </template>
 
 <script setup lang="ts">
+import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import RecommendationLayout from '@/core/components/RecommendationLayout.vue'
-import { authors, type Author } from './data'
+import { type Author } from './data'
+import { getAuthors } from '@/core/api'
 
 const router = useRouter()
+const authors = ref<Author[]>([])
+
+onMounted(async () => {
+  try {
+    const response = await getAuthors()
+    // Map API snake_case to frontend camelCase if needed
+    authors.value = response.data.map((item: any) => ({
+      ...item,
+      avatarUrl: item.avatar_url,
+      lifeSpan: item.life_span
+    }))
+  } catch (error) {
+    console.error('Failed to fetch authors:', error)
+  }
+})
 
 const goToDetail = (author: Author) => {
   // Use 'author-recommend' as the tool ID, and author.name as the item ID

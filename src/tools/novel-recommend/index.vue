@@ -40,11 +40,23 @@
 </template>
 
 <script setup lang="ts">
+import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import RecommendationLayout from '@/core/components/RecommendationLayout.vue'
-import { novels, type Novel } from './data'
+import { type Novel } from './data'
+import { getNovels } from '@/core/api'
 
 const router = useRouter()
+const novels = ref<Novel[]>([])
+
+onMounted(async () => {
+  try {
+    const response = await getNovels()
+    novels.value = response.data
+  } catch (error) {
+    console.error('Failed to fetch novels:', error)
+  }
+})
 
 const goToDetail = (novel: Novel) => {
   router.push(`/tools/novel-recommend/detail/${novel.name}`)

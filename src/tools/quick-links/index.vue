@@ -24,10 +24,36 @@
 </template>
 
 <script setup lang="ts">
+import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { linkCategories, type BaseLinkItem } from './data'
+import { type BaseLinkItem, type LinkItem } from './data'
+import { getQuickLinks } from '@/core/api'
 
 const router = useRouter()
+const linkCategories = ref<{ title: string; links: BaseLinkItem[] }[]>([])
+
+onMounted(async () => {
+  try {
+    const response = await getQuickLinks()
+    const allLinks = response.data as LinkItem[]
+    
+    // Group by category
+    const grouped = allLinks.reduce((acc, link) => {
+      if (!acc[link.category]) {
+        acc[link.category] = []
+      }
+      acc[link.category]!.push(link)
+      return acc
+    }, {} as Record<string, BaseLinkItem[]>)
+
+    linkCategories.value = Object.keys(grouped).map(title => ({
+      title,
+      links: grouped[title] || []
+    }))
+  } catch (error) {
+    console.error('Failed to fetch quick links:', error)
+  }
+})
 
 const goToDetail = (link: BaseLinkItem) => {
   router.push(`/tools/quick-links/detail/${link.name}`)

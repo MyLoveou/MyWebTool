@@ -16,24 +16,34 @@
       <el-divider />
       <h3>简介</h3>
       <p class="long-desc">{{ selectedNovel.desc }}</p>
-      <p class="long-desc">
-        这里可以展示更详细的书籍介绍内容、出版信息、获奖记录等。由于目前是演示数据，暂时复用简介字段。
-      </p>
+      
+      <div v-if="selectedNovel.details">
+        <el-divider />
+        <h3>详细介绍</h3>
+        <MdPreview :modelValue="selectedNovel.details" />
+      </div>
     </div>
     <el-empty v-else description="未找到小说信息" />
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
-import { novels } from './data'
+import { type Novel } from './data'
+import { getNovelByName } from '@/core/api'
 
 const route = useRoute()
 const novelName = route.params.itemId as string
+const selectedNovel = ref<Novel | null>(null)
 
-const selectedNovel = computed(() => {
-  return novels.find(n => n.name === novelName)
+onMounted(async () => {
+  try {
+    const response = await getNovelByName(novelName)
+    selectedNovel.value = response.data
+  } catch (error) {
+    console.error('Failed to fetch novel detail:', error)
+  }
 })
 </script>
 
@@ -54,8 +64,20 @@ const selectedNovel = computed(() => {
 }
 .long-desc {
   line-height: 1.6;
-  text-indent: 2em;
   color: #333;
+}
+.rich-text :deep(p) {
+  margin-bottom: 1em;
+  text-indent: 2em;
+}
+.rich-text :deep(h1), .rich-text :deep(h2), .rich-text :deep(h3) {
+  margin-top: 1em;
+  margin-bottom: 0.5em;
+  font-weight: bold;
+}
+.rich-text :deep(ul), .rich-text :deep(ol) {
+  padding-left: 2em;
+  margin-bottom: 1em;
 }
 .mini-tag {
   margin-right: 5px;

@@ -59,9 +59,19 @@
           </el-menu-item>
         </el-sub-menu>
 
-        <el-menu-item index="/admin">
+        <el-menu-item v-if="authStore.isAdmin" index="/admin">
            <el-icon><Setting /></el-icon>
            <span>管理后台</span>
+        </el-menu-item>
+        
+        <el-menu-item v-if="!authStore.isAuthenticated" index="/login">
+           <el-icon><User /></el-icon>
+           <span>管理员登录</span>
+        </el-menu-item>
+        
+        <el-menu-item v-if="authStore.isAuthenticated" @click="handleLogout" index="">
+           <el-icon><SwitchButton /></el-icon>
+           <span>退出登录</span>
         </el-menu-item>
       </el-menu>
     </el-aside>
@@ -83,11 +93,20 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import { Tools, HomeFilled, Menu, Setting, ElementPlus } from '@element-plus/icons-vue'
+import { Tools, HomeFilled, Menu, Setting, ElementPlus, User, SwitchButton } from '@element-plus/icons-vue'
 import { useToolRegistryStore, type Tool } from '@/core/store/tool-registry'
+import { useAuthStore } from '@/core/store/auth'
+import { useRouter } from 'vue-router'
 import _ from 'lodash'
 
 const toolStore = useToolRegistryStore()
+const authStore = useAuthStore()
+const router = useRouter()
+
+const handleLogout = () => {
+  authStore.logout()
+  router.push('/login')
+}
 
 // Helper to structure tools
 interface CategoryGroup {

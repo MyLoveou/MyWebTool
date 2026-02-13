@@ -37,11 +37,23 @@
 </template>
 
 <script setup lang="ts">
+import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import RecommendationLayout from '@/core/components/RecommendationLayout.vue'
-import { allApps, type App } from './data'
+import { type App } from './data'
+import { getSoftware } from '@/core/api'
 
 const router = useRouter()
+const allApps = ref<App[]>([])
+
+onMounted(async () => {
+  try {
+    const response = await getSoftware()
+    allApps.value = response.data
+  } catch (error) {
+    console.error('Failed to fetch software:', error)
+  }
+})
 
 const goToDetail = (app: App) => {
   router.push(`/tools/software-recommend/detail/${app.name}`)

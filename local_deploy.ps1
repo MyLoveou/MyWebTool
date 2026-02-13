@@ -1,7 +1,7 @@
 # 配置部分 - 请修改为你自己的服务器信息
-$ServerUser = "root"
-$ServerIP = "your_server_ip"
-$ProjectDir = "/var/www/tool-platform" # 服务器上项目存放的路径
+$ServerUser = "root"              # 你的服务器用户名
+$ServerIP = "101.42.2.3"             # 你的服务器公网 IP
+$ProjectDir = "/home/MyWebTool"
 
 # 1. 提交本地代码变更到 Git
 Write-Host "正在提交本地代码..." -ForegroundColor Green

@@ -68,8 +68,8 @@ chmod +x deploy.sh
 打开本地项目中的 `local_deploy.ps1` 文件，修改以下几行：
 ```powershell
 $ServerUser = "root"              # 你的服务器用户名
-$ServerIP = "1.2.3.4"             # 你的服务器公网 IP
-$ProjectDir = "/var/www/tool-platform" # 你在服务器上 clone 项目的路径
+$ServerIP = "101.42.2.3"             # 你的服务器公网 IP
+$ProjectDir = "/home/MyWebTool" # 你在服务器上 clone 项目的路径
 ```
 
 ### 2. 执行更新

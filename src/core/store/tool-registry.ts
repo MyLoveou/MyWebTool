@@ -24,6 +24,36 @@ export const useToolRegistryStore = defineStore('toolRegistry', () => {
       category: '常用工具'
     },
     {
+      id: 'json-formatter',
+      title: 'JSON 格式化',
+      path: '/tools/json-formatter',
+      componentName: 'json-formatter',
+      description: 'JSON 格式化、校验与压缩工具',
+      category: '常用工具',
+      subcategory: '实用工具',
+      hidden: true
+    },
+    {
+      id: 'base64-converter',
+      title: 'Base64 转换',
+      path: '/tools/base64-converter',
+      componentName: 'base64-converter',
+      description: 'Base64 编码与解码工具',
+      category: '常用工具',
+      subcategory: '实用工具',
+      hidden: true
+    },
+    {
+      id: 'uuid-generator',
+      title: 'UUID 生成器',
+      path: '/tools/uuid-generator',
+      componentName: 'uuid-generator',
+      description: '批量生成 UUID/GUID',
+      category: '常用工具',
+      subcategory: '实用工具',
+      hidden: true
+    },
+    {
       id: 'regex-tester',
       title: '正则测试',
       path: '/tools/regex-tester',
